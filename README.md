@@ -4,6 +4,17 @@ Lambda for simply sending a tweet upon post using Netlify's Functions capabiliti
 
 ## Setup
 
+To begin setup, with a newly cloned repo:
+```
+yarn install
+```
+
+To test this locally, run:
+```
+yarn serve
+```
+Which will start the function available at `localhost:9000/tweet`
+
 ### Config
 There are a few requirements for getting this to work:
  - Generate a shared secret string

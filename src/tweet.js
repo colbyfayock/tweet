@@ -18,13 +18,14 @@ function handler({ headers, body}, context, callback) {
     handleError(callback, e);
   }
 
-  let content;
+  const content = parsePayloadContent(body);
+
   let options = {};
 
-  content = parsePayloadContent(body);
-
-  options.auth = jwt.verify(headers.authorization, process.env.APP_SECRET);
-  options = Object.assign(options, ...buildTweet(content))
+  options.config = jwt.verify(headers.authorization, process.env.APP_SECRET);
+  options = Object.assign({}, options, {
+    ...buildTweet(content)
+  })
 
   tweet(options).then(response => {
     handleSuccess(callback, 'Ok');
