@@ -1,179 +1,35 @@
 require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
-const axios = require('axios');
-const Twitter = require('twitter');
 
-let client;
-
-const ERROR_MISSING_APPSECRET = 'Missing appsecret';
-const ERROR_MISSING_AUTH = 'Missing authorization';
-const ERROR_MISSING_STATUS = 'Missing status';
-
-exports.handler = function(event = {}, context, callback) {
-
-  let error_message;
-  let auth;
-
-  if ( !process.env.APP_SECRET ) {
-    error_message = ERROR_MISSING_APPSECRET;
-  } else if ( !event.headers || !event.headers.authorization ) {
-    error_message = ERROR_MISSING_AUTH;
-  }
-
-  if ( error_message ) {
-
-    error_message = `Error: ${error_message}`;
-
-    console.log(error_message);
-
-    callback(null, {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: error_message,
-      })
-    });
-
-    return;
-
-  }
-
-  auth = jwt.verify(event.headers.authorization, process.env.APP_SECRET);
-
-  client = new Twitter({
-    consumer_key: auth.twitter_consumer_key,
-    consumer_secret: auth.twitter_consumer_secret,
-    access_token_key: auth.twitter_access_token_key,
-    access_token_secret: auth.twitter_access_token_secret,
-  });
-
-  tweet(event).then(response => {
-
-    callback(null, {
-      statusCode: 200,
-      body: 'Ok'
-    });
-
-  }).catch(error => {
-
-    error_message = `Error: ${error}`;
-
-    console.log(error_message);
-
-    callback(null, {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: error_message,
-      })
-    });
-
-  });
-
-}
-
+const { parsePayloadContent, validateRequest, handleSuccess, handleError } = require('../lib/request');
+const { buildTweet, tweet } = require('../lib/twitter');
 
 /**
- * tweet
- * @description
+ * handler
+ * @description Lambda handler
  */
 
-async function tweet({ body, headers }) {
-
-  let content;
-  let media;
-  let options;
-  let request;
+function handler({ headers, body}, context, callback) {
 
   try {
-    content = JSON.parse(body);
+    validateRequest(process, headers);
   } catch(e) {
-    throw new Error(`Failed to parse tweet content; ${e}`);
+    handleError(callback, e);
   }
 
-  if ( typeof content.link !== 'string' || content.link.length === 0 ) {
-    throw new Error('Missing link in tweet content');
-  }
+  let content;
+  let options = {};
 
-  if ( typeof content.image === 'string' && content.image.length !== 0 ) {
-    media = await uploadMedia(content.image);
-  }
+  content = parsePayloadContent(body);
 
-  options = {
-    status: `${content.description} #givemecheapstuff #deals ${content.link}`,
-  };
+  options.auth = jwt.verify(headers.authorization, process.env.APP_SECRET);
+  options = Object.assign(options, ...buildTweet(content))
 
-  if ( media ) {
-    options.media_ids = media.media_id_string;
-  }
-
-  request = await post(options);
-
-  return request;
+  tweet(options).then(response => {
+    handleSuccess(callback, 'Ok');
+  }).catch(error => handleError(callback, error));
 
 }
 
-
-/**
- * uploadMedia
- * @description
- */
-
-async function uploadMedia(media) {
-
-  const media_request = await axios.get(media, {
-    responseType: 'arraybuffer'
-  });
-
-  if ( media_request.status !== 200 || !media_request.data ) {
-    throw new Error('Failed to download media');
-  }
-
-  const media_base64 = new Buffer(media_request.data, 'binary').toString('base64');
-
-  const options = {
-    media_data: media_base64,
-  };
-
-  return new Promise((resolve, reject) => {
-    client.post('media/upload', options,  (error, media, response) => {
-
-      if ( error ) {
-        reject(`Failed to upload media; ${error}`);
-        return;
-      }
-
-      resolve(media);
-
-    });
-  });
-
-}
-
-
-/**
- * post
- * @description
- */
-
-function post(options = {}) {
-
-  return new Promise((resolve, reject) => {
-
-    if ( typeof options.status !== 'string' ) {
-      reject(ERROR_MISSING_STATUS);
-    }
-
-    client.post('statuses/update', options,  (error, tweet, response) => {
-
-      if ( error ) {
-        reject(error);
-        return;
-      }
-
-      resolve(response);
-
-    });
-
-  });
-
-}
+exports.handler = handler;
