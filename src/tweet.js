@@ -6,25 +6,39 @@ const Twitter = require('twitter');
 
 let client;
 
+const ERROR_MISSING_APPSECRET = 'Missing appsecret';
 const ERROR_MISSING_AUTH = 'Missing authorization';
 const ERROR_MISSING_STATUS = 'Missing status';
 
 exports.handler = function(event = {}, context, callback) {
 
-  if ( !event.headers || !event.headers.authorization ) {
+  let error_message;
+  let auth;
 
-    console.log(ERROR_MISSING_AUTH);
+  if ( !process.env.APP_SECRET ) {
+    error_message = ERROR_MISSING_APPSECRET;
+  } else if ( !event.headers || !event.headers.authorization ) {
+    error_message = ERROR_MISSING_AUTH;
+  }
+
+  if ( error_message ) {
+
+    error_message = `Error: ${error_message}`;
+
+    console.log(error_message);
 
     callback(null, {
       statusCode: 500,
       body: JSON.stringify({
-        error: ERROR_MISSING_AUTH,
+        error: error_message,
       })
     });
 
+    return;
+
   }
 
-  const auth = jwt.verify(event.headers.authorization, process.env.APP_SECRET);
+  auth = jwt.verify(event.headers.authorization, process.env.APP_SECRET);
 
   client = new Twitter({
     consumer_key: auth.twitter_consumer_key,
@@ -35,8 +49,6 @@ exports.handler = function(event = {}, context, callback) {
 
   tweet(event).then(response => {
 
-    console.log('response', response);
-
     callback(null, {
       statusCode: 200,
       body: 'Ok'
@@ -44,7 +56,7 @@ exports.handler = function(event = {}, context, callback) {
 
   }).catch(error => {
 
-    const error_message = `Error: ${error}`;
+    error_message = `Error: ${error}`;
 
     console.log(error_message);
 
