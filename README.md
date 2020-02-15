@@ -2,7 +2,7 @@
 
 Lambda for simply sending a tweet upon post using Netlify's Functions capabilities.
 
-## Quick Start
+## ⚡ Quick Start
 
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/colbyfayock/tweet)
 
@@ -16,7 +16,7 @@ Your function should now be avialable at:
 https://[your-netlify-site].netlify.com/.netlify/functions/tweet
 ```
 
-## Posting to Endpoint
+## 🚀 Posting to Endpoint
 
 ### Authorization Header
 When posting to the endpoint, you'll need to generate a [JWT](https://jwt.io/) given the same `APP_SECRET` as above. The contents of the JWT before signed should look like:
@@ -43,7 +43,7 @@ The body of the post should look like the following:
 }
 ```
 
-## Local Setup
+## ⚒️ Local Setup
 
 To begin setup, with a newly cloned repo:
 
