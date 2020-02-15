@@ -13,7 +13,7 @@ Lambda for simply sending a tweet upon post using Netlify's Functions capabiliti
 Your function should now be avialable at:
 
 ```
-https://[your netlify site].netlify.com/.netlify/functions/tweet
+https://[your-netlify-site].netlify.com/.netlify/functions/tweet
 ```
 
 ## Posting to Endpoint
