@@ -45,11 +45,22 @@ The body of the post should look like the following:
 
 ## ⚒️ Local Setup
 
+### Install Dependencies
+
 To begin setup, with a newly cloned repo:
 
 ```
 yarn install
 ```
+
+### Env
+Create a local `.env` file at the root of the project with the shared secret. This is used in coordination with JWT to create token containing your Twitter keys that gets posted to this function endpoint.
+
+```
+APP_SECRET="[secret]"
+```
+
+### Run it Locally
 
 To test this locally, run:
 
@@ -57,13 +68,5 @@ To test this locally, run:
 yarn serve
 ```
 
-Which will start the function available at `localhost:9000/tweet`
+The function should now be available at `localhost:9000/tweet`
 
-### Env
-Create a local `.env` file with the shared secret. This is used in coordination with JWT to create token containing your Twitter keys that gets posted to this function endpoint.
-
-```
-APP_SECRET="[secret]"
-```
-
-Wherever this is getting deployed, you'll need to set up an environment variable with that name that will populate the `process.env` when the function is ran. With Netlify, you can set this up as a Build Environment Variable.
