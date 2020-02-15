@@ -11,10 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
-    "dotenv": "^6.2.0",
-    "jsonwebtoken": "^8.4.0",
-    "netlify-lambda": "^1.1.0",
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "netlify-lambda": "^1.6.3",
     "twitter": "^1.7.1"
   }
 }
