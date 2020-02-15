@@ -19,7 +19,7 @@ https://[your-netlify-site].netlify.com/.netlify/functions/tweet
 ## Posting to Endpoint
 
 ### Authorization Header
-When posting to the endpoint, you'll need to generate a JWT given the same `APP_SECRET` as above. The contents of the JWT before signed should look like:
+When posting to the endpoint, you'll need to generate a [JWT](https://jwt.io/) given the same `APP_SECRET` as above. The contents of the JWT before signed should look like:
 ```
 {
   twitter_consumer_key: [key],
@@ -28,6 +28,8 @@ When posting to the endpoint, you'll need to generate a JWT given the same `APP_
   twitter_access_token_secret: [key],
 }
 ```
+
+You can use libraries such as Auth0's JsonWebToken to generate within your app: https://github.com/auth0/node-jsonwebtoken
 
 Pass this as an `Authorization` header
 
