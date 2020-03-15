@@ -1,41 +1,25 @@
-# Tweet with Twitter!
+# 🐦 Tweet with Twitter!
 
 Lambda for simply sending a tweet upon post using Netlify's Functions capabilities.
 
-## Setup
+## ⚡ Quick Start
 
-To begin setup, with a newly cloned repo:
-```
-yarn install
-```
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/colbyfayock/tweet)
 
-To test this locally, run:
-```
-yarn serve
-```
-Which will start the function available at `localhost:9000/tweet`
+* Deploy to Netlify (use button above)
+* Add a unique key as your APP_SECRET under Settings > Build & Deploy > Environment
+* Once deployed, you're ready to get started!
 
-### Config
-There are a few requirements for getting this to work:
- - Generate a shared secret string
- - Twitter consumer key
- - Twitter consumer secret
- - Twitter access token
- - Twitter access secret
-
-### Env
-Create a local `.env` file with the shared secret. This is used in coordination with JWT to create token containing your Twitter keys that gets posted to this function endpoint.
+Your function should now be avialable at:
 
 ```
-APP_SECRET="[secret]"
+https://[your-netlify-site].netlify.com/.netlify/functions/tweet
 ```
 
-Wherever this is getting deployed, you'll need to set up an environment variable with that name that will populate the `process.env` when the function is ran. With Netlify, you can set this up as a Build Environment Variable.
-
-## Posting to Endpoint
+## 🚀 Posting to Endpoint
 
 ### Authorization Header
-When posting to the endpoint, you'll need to generate a JWT given the same `APP_SECRET` as above. The contents of the JWT before signed should look like:
+When posting to the endpoint, you'll need to generate a [JWT](https://jwt.io/) given the same `APP_SECRET` as above. The contents of the JWT before signed should look like:
 ```
 {
   twitter_consumer_key: [key],
@@ -44,6 +28,8 @@ When posting to the endpoint, you'll need to generate a JWT given the same `APP_
   twitter_access_token_secret: [key],
 }
 ```
+
+You can use libraries such as Auth0's JsonWebToken to generate within your app: https://github.com/auth0/node-jsonwebtoken
 
 Pass this as an `Authorization` header
 
@@ -56,3 +42,31 @@ The body of the post should look like the following:
   "image": "[tweet image (optional)]",
 }
 ```
+
+## ⚒️ Local Setup
+
+### Install Dependencies
+
+To begin setup, with a newly cloned repo:
+
+```
+yarn install
+```
+
+### Env
+Create a local `.env` file at the root of the project with the shared secret. This is used in coordination with JWT to create token containing your Twitter keys that gets posted to this function endpoint.
+
+```
+APP_SECRET="[secret]"
+```
+
+### Run it Locally
+
+To test this locally, run:
+
+```
+yarn serve
+```
+
+The function should now be available at `localhost:9000/tweet`
+
