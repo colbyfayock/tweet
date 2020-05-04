@@ -12,8 +12,6 @@ const { buildTweet, tweet } = require('../lib/twitter');
 
 function handler(event = {}, context, callback) {
   const { headers, body} = event;
-  console.log('event', event);
-  console.log('body', body);
 
   try {
     validateRequest(process, headers);
